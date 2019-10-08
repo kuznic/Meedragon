@@ -87,37 +87,7 @@ class Employees():
                 print(employee)
 
 
-    def hash_password(self,password):
-        """Hash a password for storing."""
-        salt = hashlib.sha256(os.urandom(60)).hexdigest().encode('ascii')
-        pwdhash = hashlib.pbkdf2_hmac('sha512', password.encode('utf-8'),salt, 100000)
-        pwdhash = binascii.hexlify(pwdhash)
-        return (salt + pwdhash).decode('ascii')
-
-    def verify_password(self,stored_password, provided_password):
-        """Verify a stored password against one provided by user"""
-        salt = stored_password[:64]
-        stored_password = stored_password[64:]
-        pwdhash = hashlib.pbkdf2_hmac('sha512',provided_password.encode('utf-8'), salt.encode('ascii'),100000)
-        pwdhash = binascii.hexlify(pwdhash).decode('ascii')
-        return pwdhash == stored_password
-
-    def verify_user_login(self, user_name, password):
-        """Verify user login credentials"""
-        try:
-            login_detail = self.get_employee(user_name)
-            hashed_pword = login_detail['password']
-            if login_detail:
-                if self.verify_password(hashed_pword,password) == True:
-                    return True
-                else:
-                    return False
-            else:
-                return False
-           
-            #If user doesn't exist then this is triggered
-        except KeyError:
-            return False
+    
 
     def get_employee(self,user_name):
         #lists details about a particular employee#
