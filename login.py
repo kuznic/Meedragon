@@ -1,16 +1,17 @@
 
 from getpass import getpass
 from employees import  *
-from filling_station import *
+from fillingstation import *
 from pump import Pump
 class Login():
-    """This class handles general administration of the filling station as well as logging into the application"""
+    """This class handles general administration of the filling station as well as loging into the application"""
 
     def __init__(self):
         self.employee = Employees()
-        self.filling_station = StationProfile('Initalized','Initalized')
+        self.filling_station = FillingStation('Initalized','Initalized')
         self.pump = Pump()
         self.login_users_file = r'data_files\users.json'
+        self.user_role = ['admin', 'non-admin']
     
     def create_user(self,user, passwrd):
         """This creates a new user login credential"""
@@ -19,7 +20,19 @@ class Login():
                 file = json.load(fobj)
         
         passwrd_hash = self.hash_password(passwrd)
-        new_user = {'user_name':user, 'password':passwrd_hash}
+        user_login_role = ''
+        choice = 1
+        print("Choose User role from the list below:")
+        for role in sorted(self.user_role):
+            print("\t" + str(choice) +'.' + role)
+            choice=choice + 1
+        userr_role = int(input("ROLE: "))
+        if userr_role==1:
+            user_login_role = "admin"
+        elif userr_role==2:
+            user_login_role= 'non-admin'
+
+        new_user = {'user_name':user, 'password':passwrd_hash, 'role':user_login_role}
         file.append(new_user)
         with open(self.login_users_file, 'w') as f:
             json.dump(file,f)
@@ -32,6 +45,7 @@ class Login():
             for user in users_file:
                 if user['user_name'] == user_name:
                     user_detail = user
+        return user_detail
 
 
     def hash_password(self,password):
@@ -75,7 +89,6 @@ class Login():
             lastname=input("Enter the lastname of the employee: ")
             res_address=input("Enter the residential address of the employee: ")
             phone_number=input("Enter the phone number of the employee: ")
-            password = input("Enter password for the new employee:")
             employee_category = ''
             print("Choose employee category from the list below:")
             for category in sorted(self.employee.employee_categorry):
@@ -89,7 +102,7 @@ class Login():
             elif employee_category_choice==3:
                 employee_category = 'station manager'
 
-            self.employee.create_employee(firstname, lastname, res_address,phone_number,employee_category,password)
+            self.employee.create_employee(firstname, lastname, res_address,phone_number,employee_category)
             print("New employee has been created successfully!")
        
         #view employees' details
@@ -132,10 +145,10 @@ class Login():
                         pump_manufacturer = input("Enter the name of the manufacturer of pump " + str(counter) +":")
                         manufacture_date = input("Enter the date of manufacture of pump " + str(counter)+":")
                         type_of_pump = input("Enter the type of pump of pump " + str(counter) +":")
-                        self.filling_station.pump.set_type_of_pump(type_of_pump)
+                        self.pump.set_type_of_pump(type_of_pump)
                         pump_capacity = int(input("Enter the pump capacity  of pump " + str(counter) + ":"))
 
-                        self.filling_station.pump.add_filling_station_pump_details(name_of_filling_station,counter,pump_manufacturer,
+                        self.pump.add_filling_station_pump_details(name_of_filling_station,counter,pump_manufacturer,
                                                                         manufacture_date,type_of_pump,pump_capacity)
                         counter-=1
        
@@ -146,9 +159,15 @@ class Login():
             else:
                 print("This filling station " + name_of_filling_station + " does not exist!")
 
+         #create new user
+        elif choice ==8:
+            username=input('ENTER USERNAME:')
+            passwod=getpass('ENTER PASSWORD:')
+            self.create_user(username,passwod)
+             
 
         #Exit program
-        elif choice == 8:
+        elif choice == 9:
             print('Exiting Program........')
             print('Program exited!')
             pass
@@ -157,6 +176,6 @@ class Login():
     def non_station_manager_options(self, choice):
         """Handles the different administrative functions a non-station manager can perform"""
         if choice ==1:
-            emp_detail=self.employee.get_employee(user_name)
+            emp_detail=self.employee.list_employees()
             print(emp_detail)
 
