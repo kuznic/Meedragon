@@ -6,19 +6,10 @@ class FillingStation():
     def __init__(self, name, location):
         self.name = name
         self.location = location
-        self.filling_station_file = r'data_files\filling_station.json'#Petrol station information is stored in this file
-
-    def get_filling_station_profile(self):
-        """provides a summary of the filling station"""
-        print("\nProfile of " + self.name.title() + " filling station:")
-        print("NAME:" + self.name)
-        print("ADDRESS:" + self.location)
-        print("TOTAL NUMBER OF PUMPS:" + str(self.pump.get_number_of_pumps()))
-
-    
+        self.filling_station_file = r'data_files\filling_station.json'#Filling station information is stored in this file
 
     def create_filling_station(self,name_of_station,address, number_of_pumps):
-        """This function adds new petrol stations to the petrol_station json file"""
+        """This function adds new filling stations to the filling_station json file"""
         new_station_detail = {'station_name': name_of_station,'address':address, 
                               'number_of_pumps':number_of_pumps}
         station_file=[]
@@ -39,11 +30,13 @@ class FillingStation():
         """lists stations' details"""
         print("Stations' details: ")
         stations_list = []
-        with open(self.filling_station_file, 'r') as file_obj:
-            stations_list = json.load(file_obj)#fetch stations' information
-            for station in stations_list:
-                print(station)
-
+        try:
+            with open(self.filling_station_file, 'r') as file_obj:
+                stations_list = json.load(file_obj)#fetch stations' information
+                for station in stations_list:
+                    print(station)
+        except json.decoder.JSONDecodeError:
+            print('No filling station has been created!')
     def get_station(self,station_name):
             """fetch detail about a particular filling station"""
             station_detail = {}
