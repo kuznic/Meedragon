@@ -1,11 +1,37 @@
+
+from getpass import getpass
 from employees import  *
 from filling_station import *
+from pump import Pump
 class Login():
-    """This class handles general administration of the filling station as well as loging into the application"""
+    """This class handles general administration of the filling station as well as logging into the application"""
 
     def __init__(self):
         self.employee = Employees()
         self.filling_station = StationProfile('Initalized','Initalized')
+        self.pump = Pump()
+        self.login_users_file = r'data_files\users.json'
+    
+    def create_user(self,user, passwrd):
+        """This creates a new user login credential"""
+        file = []
+        with open (self.login_users_file, 'r') as fobj:
+                file = json.load(fobj)
+        
+        passwrd_hash = self.hash_password(passwrd)
+        new_user = {'user_name':user, 'password':passwrd_hash}
+        file.append(new_user)
+        with open(self.login_users_file, 'w') as f:
+            json.dump(file,f)
+
+    def get_user(self,user_name):
+        """fetchs a user login detail"""
+        user_detail = {}
+        with open(self.login_users_file) as file_obj:
+            users_file = json.load(file_obj)#fetch user login information:
+            for user in users_file:
+                if user['user_name'] == user_name:
+                    user_detail = user
 
 
     def hash_password(self,password):
@@ -26,7 +52,7 @@ class Login():
     def verify_user_login(self, user_name, password):
         """Verify user login credentials"""
         try:
-            login_detail = self.employee.get_employee(user_name)
+            login_detail = self.get_user(user_name)
             hashed_pword = login_detail['password']
             if login_detail:
                 if self.verify_password(hashed_pword,password) == True:
@@ -133,6 +159,4 @@ class Login():
         if choice ==1:
             emp_detail=self.employee.get_employee(user_name)
             print(emp_detail)
-
-
 
