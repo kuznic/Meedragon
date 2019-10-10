@@ -2,36 +2,38 @@
 #                                                                                                             #
 #AUTHOR: EMEKA VIN-ANUONYE                                                                                    #
 
-#This application is a simple console gas station management software                                                        #
+#This application is a gas station management software                                                        #
 #                                                                                                             #
 #-------------------------------------------------------------------------------------------------------------#
 
 
 
 from login import *
+from createjsondatafiles import *
 from getpass import getpass
 import os
 
 
-
-#creates an instance of the login class
-my_login = Login()
-my_login.employee.create_employee_file()
-my_login.filling_station.create_filling_station_file()
-my_login.filling_station.pump.create_filling_station_pump_details_file()
-my_login.employee.create_last_generated_employee_number_file()
-
-
-
 def main():
+
+    #creates an instance of the login class
+    my_login = Login()
+    #create an instance of the create_data_files class
+    create_data_files = CreateJsonDataFiles()
+
+    create_data_files.create_login_users_file()
+    create_data_files.create_employee_file()
+    create_data_files.create_last_generated_employee_number_file()
+    create_data_files.create_filling_station_file()
+    create_data_files.create_filling_station_pump_details_file()
 
     user_name =input('ENTER YOUR USERNAME:')#prompt user to provide user name
     passsword = getpass('ENTER YOUR PASSWORD:')#prompt user to enter password
 
     #check to see if user exists
-    if my_login.employee.verify_user_login(user_name,passsword) == True:
+    if my_login.verify_user_login(user_name,passsword) == True:
 
-        if my_login.employee.get_employee_category(user_name) == 'station manager' :
+        if my_login.get_user(user_name)['role'] == 'admin' :
             print('Welcome back ' + user_name)
             print("What will you like to do:\n")
             print("\t1.Create an employee")
@@ -41,7 +43,8 @@ def main():
             print("\t5.Add a new filling station")
             print("\t6.View filling stations")
             print("\t7.Add pump details for filling station")
-            print("\t8.Exit")
+            print("\t8.Create user")
+            print("\t9.Exit")
 
             choice= int(input("Please pick an option:"))
 
@@ -52,7 +55,7 @@ def main():
             print('Welcome back ' + user_name)
             print("\n")
             print("What will you like to do:\n")
-            print("\t1.View your employee details")
+            print("\t1.View employee details")
 
             choice= int(input("Please pick an option:"))
             my_login.non_station_manager_options(choice)
