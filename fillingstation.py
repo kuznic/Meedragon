@@ -33,10 +33,11 @@ class FillingStation():
         try:
             with open(self.filling_station_file, 'r') as file_obj:
                 stations_list = json.load(file_obj)#fetch stations' information
-                for station in stations_list:
-                    print(station)
+                for index, station in enumerate(stations_list):
+                    print('\n'f'{index}:{station}')
         except json.decoder.JSONDecodeError:
             print('No filling station has been created!')
+
     def get_station(self,station_name):
             """fetch detail about a particular filling station"""
             station_detail = {}
