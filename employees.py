@@ -53,8 +53,8 @@ class Employees():
         try:
             with open(self.employees_file, 'r') as file_obj:
                 employees_list = json.load(file_obj)#fetch employees information
-                for employee in employees_list:
-                    print(employee)
+                for index, employee in enumerate(employees_list, 1):
+                    print('\n'f'{index}: {employee}')
         except  json.decoder.JSONDecodeError:
             print('No employee has been added!')
 
